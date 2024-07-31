@@ -1,5 +1,6 @@
 import streamlit as st
 from openai import OpenAI
+from pii_functions import mask_sensitive_info
 
 # Show title and description.
 st.title("💬 Chatbot")
@@ -33,7 +34,7 @@ else:
     # Create a chat input field to allow the user to enter a message. This will display
     # automatically at the bottom of the page.
     if prompt := st.chat_input("What is up?"):
-
+        prompt = mask_sensitive_info(prompt)
         # Store and display the current prompt.
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
@@ -53,4 +54,5 @@ else:
         # session state.
         with st.chat_message("assistant"):
             response = st.write_stream(stream)
+            response = mask_sensitive_info(response)
         st.session_state.messages.append({"role": "assistant", "content": response})
